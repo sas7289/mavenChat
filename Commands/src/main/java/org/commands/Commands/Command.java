@@ -1,0 +1,34 @@
+package org.commands.Commands;
+
+
+public class Command {
+    CommandsType type;
+    public CommandsType getType() {
+        return this.type;
+    }
+
+
+    public static Command createAuthCmd(String login, String password) {
+        return new AuthRequest(login, password);
+    }
+
+    public static Command createDisconnectCmd() {
+        return new Disconnect();
+    }
+
+    public static Command createPrivateMessageCmd(String targetUser, String message) {
+        return new PrivateMessage(targetUser, message);
+    }
+
+    public static Command createBroadcastMessageCmd(String message) {
+        return new BroadcastMessage(message);
+    }
+
+    public static Command createServerMessageCmd(String message) {
+        return new ServerMessage(message);
+    }
+
+    public static Command createAnswerAuthorization(String username) {
+        return new AuthAnswer(username);
+    }
+}

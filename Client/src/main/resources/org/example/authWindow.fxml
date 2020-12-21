@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AuthController">
+    <children>
+        <SplitPane dividerPositions="0.7562814070351759" layoutX="220.0" layoutY="46.0" orientation="VERTICAL"
+                   prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                    <children>
+                        <PasswordField fx:id="passwordField" layoutX="197.0" layoutY="175.0">
+                            <padding>
+                                <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
+                            </padding>
+                        </PasswordField>
+                        <TextField fx:id="loginField" layoutX="197.0" layoutY="100.0">
+                            <padding>
+                                <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
+                            </padding>
+                        </TextField>
+                        <Label layoutX="38.0" layoutY="100.0" prefHeight="36.0" prefWidth="136.0" text="Логин">
+                            <font>
+                                <Font size="16.0"/>
+                            </font>
+                        </Label>
+                        <Label layoutX="38.0" layoutY="175.0" prefHeight="36.0" prefWidth="136.0" text="Пароль">
+                            <font>
+                                <Font size="16.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="141.0" prefWidth="598.0">
+                    <children>
+                        <Button fx:id="connectButton" layoutX="143.0" layoutY="26.0" mnemonicParsing="false" prefHeight="42.0"
+                                prefWidth="114.0" text="Подключение"/>
+                        <Button fx:id="exitButton" layoutX="353.0" layoutY="26.0" mnemonicParsing="false" prefHeight="42.0"
+                                prefWidth="114.0" text="Выход"/>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>
