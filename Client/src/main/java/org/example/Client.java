@@ -25,7 +25,7 @@ public class Client extends Application {
         controller.setClient(this);
         Network network = new Network();
         network.connection();
-        showAuthWindow(network);
+//        showAuthWindow(network);
     }
 
 
