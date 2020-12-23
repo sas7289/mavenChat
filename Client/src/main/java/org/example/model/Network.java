@@ -1,37 +1,45 @@
 package org.example.model;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.google.inject.internal.ErrorsException;
+import org.example.Client;
+
+import java.io.*;
 import java.net.Socket;
+import java.rmi.NotBoundException;
 
 public class Network {
     String username;
     Socket socket;
-    static int serverPort = 8189;
-    static String serverIp = "localhost";
+    static int serverPort = 8199;
+    static String serverHost = "localhost";
 
-    ObjectInputStream objectInputStream;
-    ObjectOutputStream objectOutputStream;
+
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
+
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
 
 
     public Network() {
-        this(serverIp, serverPort);
+        this(serverHost, serverPort);
     }
 
-    public Network(String ip, int port) {
-        serverIp = ip;
+    public Network(String host, int port) {
+        serverHost = host;
         serverPort = port;
     }
 
-    public boolean connection() throws IOException {
-        socket = new Socket(serverIp, serverPort);
-        if(socket.isConnected()) {
-            this.objectInputStream = (ObjectInputStream) socket.getInputStream();
-            this.objectOutputStream = (ObjectOutputStream) socket.getOutputStream();
+    public boolean connection() {
+        try {
+            socket = new Socket(serverHost, serverPort);
+            this.objectOutputStream = new ObjectOutputStream (socket.getOutputStream());
+            this.objectInputStream = new ObjectInputStream (socket.getInputStream());
             return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public ObjectInputStream getObjectInputStream() {

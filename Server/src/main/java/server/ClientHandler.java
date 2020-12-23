@@ -23,29 +23,40 @@ public class ClientHandler {
     }
 
     public void handle() throws IOException {
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
         objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-        try {
-            waitMessage();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
+        new Thread(() -> {
+            try {
+                System.out.println("Жду сообщений от пользователя");
+                waitMessage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void waitMessage() throws IOException, ClassNotFoundException, SQLException {
         while (true) {
-            Command command = (Command) objectInputStream.readObject();
+            Command command = null;
+            try {
+                command = (Command) objectInputStream.readObject();
+            }
+            catch (ClassNotFoundException e) {
+                System.out.println("Пришёл неизвестный объект");
+            }
             switch (command.getType()) {
                 case Auth:
                     AuthRequest authRequest = (AuthRequest) command;
                     username = server.getUsername(authRequest.getLogin(), authRequest.getPassword());
-                    if(username != null) {
+                    if (username != null) {
                         server.addUser(username, null);
                         server.getUserHandlers().put(username, this);
                         objectOutputStream.writeObject(Command.createAnswerAuthorization(username));
                     }
                 case BroadcastMessage:
-                    for ( Map.Entry<String, ClientHandler> pair: server.getUserHandlers().entrySet()) {
+                    for (Map.Entry<String, ClientHandler> pair : server.getUserHandlers().entrySet()) {
                         pair.getValue().sendCommand(command);
                     }
                 case PrivateMessage:

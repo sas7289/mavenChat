@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.example.Client;
 import org.example.model.Network;
 
 import java.io.IOException;
@@ -73,6 +74,7 @@ public class AuthController {
                 }
             }
             authStage.close();
+            Client.primaryStage.show();
         });
         thread.start();
     }

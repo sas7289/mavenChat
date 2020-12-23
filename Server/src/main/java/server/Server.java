@@ -10,10 +10,10 @@ import java.util.HashMap;
 
 public class Server {
     Statement stmt;
-//    private ArrayList<ClientHandler> userHandlers = new ArrayList<>();
+    //    private ArrayList<ClientHandler> userHandlers = new ArrayList<>();
     private HashMap<String, ClientHandler> userHandlers = new HashMap();
-    private static int PORT_SERVER = 8189;
-    private ServerSocket serverSocket;
+    private static final int PORT_SERVER = 8199;
+    private final ServerSocket serverSocket;
 
     public Server() throws IOException {
         this(PORT_SERVER);
@@ -27,19 +27,16 @@ public class Server {
         this.stmt = stmt;
     }
 
-    public void waitConnection() throws IOException {
+    public void waitConnection() {
         while (true) {
             System.out.println("Сервер запущен и ожидает подключения");
-            Socket clientSocket = serverSocket.accept();
-            new Thread(() -> {
-                try {
-                    System.out.println("Пользователь подключился");
-                    ClientHandler clientHandler = new ClientHandler(this, clientSocket);
-                    clientHandler.handle();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            try {
+                Socket clientSocket = serverSocket.accept();
+                ClientHandler clientHandler = new ClientHandler(this, clientSocket);
+                clientHandler.handle();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -48,11 +45,11 @@ public class Server {
         ResultSet rs = stmt.executeQuery(String.format("SELECT Username FROM Users WHERE Login = '%s' AND Password = '%s'", login, password));
         if (rs.next()) {
             return rs.getString("Username");
-        }
-        else {
+        } else {
             return null;
         }
     }
+
     public void addUser(String username, String group) throws SQLException {
         stmt.executeUpdate(String.format("INSERT INTO current_session VALUES ('%s', '%s')", username, group));
     }
