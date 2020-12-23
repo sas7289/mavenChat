@@ -1,11 +1,10 @@
 package org.example.model;
 
-import com.google.inject.internal.ErrorsException;
+import org.commands.Commands.*;
 import org.example.Client;
 
 import java.io.*;
 import java.net.Socket;
-import java.rmi.NotBoundException;
 
 public class Network {
     String username;
@@ -16,9 +15,6 @@ public class Network {
 
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
-
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
 
 
     public Network() {
@@ -57,5 +53,31 @@ public class Network {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+
+    public void sendAuth(String login, String password) throws IOException {
+        Command command = new AuthRequest(login, password);
+        objectOutputStream.writeObject(command);
+    }
+    public void waitAnswer() {
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    AuthAnswer authAnswer = (AuthAnswer) objectInputStream.readObject();
+                    if(authAnswer.getUsername() != null) {
+                        authAnswer.getUsername();
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+//            authStage.close();
+//            Client.primaryStage.show();
+        });
+        thread.start();
     }
 }

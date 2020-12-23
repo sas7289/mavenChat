@@ -1,7 +1,9 @@
 package org.commands.Commands;
 
 
-public class Command {
+import java.io.Serializable;
+
+public class Command implements Serializable {
     CommandsType type;
     public CommandsType getType() {
         return this.type;

@@ -41,44 +41,25 @@ public class AuthController {
     @FXML
     public void initialize() {
         connectButton.setOnAction(event -> {
-            try {
-                sendAuth();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                auth();
         });
         exitButton.setOnAction(event -> {
             authStage.close();
         });
     }
 
-
-    public void sendAuth() throws IOException {
-        Command command = new AuthRequest(loginField.getText(), passwordField.getText());
-        network.getObjectOutputStream().writeObject(command);
+    private void auth() {
+        try {
+            String login = loginField.getText();
+            String pass = passwordField.getText();
+//            Client.showErrorMessage("+++++++++++");
+            network.sendAuth(login, pass);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Client.showErrorMessage("--------------");
+        }
+        network.waitAnswer();
     }
-
-    public void waitAnswer() {
-        Thread thread = new Thread(() -> {
-            while (true) {
-                try {
-                    AuthAnswer authAnswer = (AuthAnswer) network.getObjectInputStream().readObject();
-                    if(authAnswer.getUsername() != null) {
-                        network.setUsername(authAnswer.getUsername());
-                        break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            authStage.close();
-            Client.primaryStage.show();
-        });
-        thread.start();
-    }
-
 
 
 }

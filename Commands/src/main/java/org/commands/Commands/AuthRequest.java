@@ -1,6 +1,8 @@
 package org.commands.Commands;
 
-public class AuthRequest extends Command {
+import java.io.Serializable;
+
+public class AuthRequest extends Command implements Serializable {
     String login;
     String password;
 

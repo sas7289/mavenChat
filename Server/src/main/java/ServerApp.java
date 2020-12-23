@@ -1,3 +1,5 @@
+import org.commands.Commands.AuthRequest;
+import org.commands.Commands.Command;
 import server.DBManagement;
 import server.Server;
 
