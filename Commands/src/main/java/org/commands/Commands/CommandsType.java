@@ -1,6 +1,8 @@
 package org.commands.Commands;
 
-public enum CommandsType {
+import java.io.Serializable;
+
+public enum CommandsType implements Serializable {
     Auth,
     AuthAnswer,
     BroadcastMessage,

@@ -1,6 +1,8 @@
 package org.commands.Commands;
 
-public class BroadcastMessage extends Command {
+import java.io.Serializable;
+
+public class BroadcastMessage extends Command implements Serializable {
     String message;
 
     public BroadcastMessage(String message) {

@@ -42,7 +42,7 @@ public class AuthController {
     @FXML
     public void initialize() {
         connectButton.setOnAction(event -> {
-                auth();
+            auth();
         });
         exitButton.setOnAction(event -> {
             authStage.close();
@@ -64,6 +64,7 @@ public class AuthController {
             authStage.close();
             Client.primaryStage.show();
             Client.mainController.getUsernameOnClient().setText(Client.username);
+            Client.mainController.network.waitMessage();
         });
     }
 

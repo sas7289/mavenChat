@@ -2,6 +2,7 @@ package org.example.model;
 
 import org.commands.Commands.*;
 import org.example.Client;
+import org.example.controller.MainController;
 
 import java.io.*;
 import java.net.Socket;
@@ -56,13 +57,42 @@ public class Network {
     }
 
 
-    public void sendAuth(String login, String password) throws IOException {
+    synchronized public void sendAuth(String login, String password) throws IOException {
 //        Client.showErrorMessage("------------1");
         Command command = new AuthRequest(login, password);
 //        Client.showErrorMessage("------------2");
         objectOutputStream.writeObject(command);
     }
-    public void waitAnswer() {
+
+    synchronized public void sendMessageToServer(String message) {
+        Command command = new BroadcastMessage(message);
+        try {
+//            Client.showErrorMessage("-------------------");
+            objectOutputStream.writeObject(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void waitMessage() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Command command = (Command) getObjectInputStream().readObject();
+                    switch (command.getType()) {
+                        case BroadcastMessage:
+                            BroadcastMessage broadcastMessage = (BroadcastMessage) command;
+                            Client.mainController.addMessageToTable(broadcastMessage.getMessage());
+                    }
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    synchronized public void waitAnswer() {
             while (true) {
                 try {
                     AuthAnswer authAnswer = (AuthAnswer) objectInputStream.readObject();

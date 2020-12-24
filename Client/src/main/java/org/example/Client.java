@@ -26,13 +26,13 @@ public class Client extends Application {
             showErrorMessage("Ошибка подключения");
             return;
         }
-        createMainWindow();
+        createMainWindow(network);
         showAuthWindow(network);
 
 
     }
 
-    private void createMainWindow() {
+    private void createMainWindow(Network network) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(org.example.Client.class.getResource("mainWindow.fxml"));
         try {
@@ -44,6 +44,7 @@ public class Client extends Application {
 
         primaryStage.setTitle("ClientChat");
         mainController= loader.getController();
+        mainController.setNetwork(network);
         mainController.setClient(this);
         primaryStage.setAlwaysOnTop(true);
 //        primaryStage.show();

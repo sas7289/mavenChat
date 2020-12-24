@@ -5,13 +5,18 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.commands.Commands.BroadcastMessage;
+import org.commands.Commands.Command;
 import org.example.Client;
+import org.example.model.Network;
 
 
 import java.util.Date;
 
 public class MainController  {
     Client client;
+
+    Network network;
 
     @FXML
     TextArea textArea;
@@ -32,6 +37,9 @@ public class MainController  {
     Label usernameOnClient;
 
 
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 
     private final ObservableList<RowTable> listOfMessages = FXCollections.observableArrayList(
             new RowTable(new Date(), "HelloEPTA")
@@ -42,7 +50,9 @@ public class MainController  {
     @FXML
     public void initialize() {
         sendMessageButton.setOnAction(event -> {
-            addMessageToTable(textArea.getText());
+            String message = textArea.getText();
+//            addMessageToTable(message);
+            sendMessageToServer(message);
             textArea.clear();
         });
 
@@ -58,8 +68,13 @@ public class MainController  {
     }
 
     @FXML
-    private void addMessageToTable(String message) {
+    public void addMessageToTable(String message) {
         listOfMessages.add(new RowTable(new Date(), message));
+    }
+
+
+    private void sendMessageToServer(String message) {
+        network.sendMessageToServer(message);
     }
 
 
