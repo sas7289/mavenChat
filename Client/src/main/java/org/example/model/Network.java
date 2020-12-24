@@ -57,16 +57,18 @@ public class Network {
 
 
     public void sendAuth(String login, String password) throws IOException {
+//        Client.showErrorMessage("------------1");
         Command command = new AuthRequest(login, password);
+//        Client.showErrorMessage("------------2");
         objectOutputStream.writeObject(command);
     }
     public void waitAnswer() {
-        Thread thread = new Thread(() -> {
             while (true) {
                 try {
                     AuthAnswer authAnswer = (AuthAnswer) objectInputStream.readObject();
                     if(authAnswer.getUsername() != null) {
                         authAnswer.getUsername();
+//                        Client.showErrorMessage("waitanswer");
                         break;
                     }
                 } catch (IOException e) {
@@ -75,9 +77,6 @@ public class Network {
                     e.printStackTrace();
                 }
             }
-//            authStage.close();
-//            Client.primaryStage.show();
-        });
-        thread.start();
+            Client.primaryStage.show();
     }
 }

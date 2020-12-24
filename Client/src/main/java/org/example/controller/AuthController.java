@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import javafx.application.Platform;
 import org.commands.Commands.AuthAnswer;
 import org.commands.Commands.AuthRequest;
 import org.commands.Commands.Command;
@@ -49,16 +50,19 @@ public class AuthController {
     }
 
     private void auth() {
-        try {
-            String login = loginField.getText();
-            String pass = passwordField.getText();
+        Platform.runLater(() -> {
+            try {
+                String login = loginField.getText();
+                String pass = passwordField.getText();
 //            Client.showErrorMessage("+++++++++++");
-            network.sendAuth(login, pass);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Client.showErrorMessage("--------------");
-        }
-        network.waitAnswer();
+                network.sendAuth(login, pass);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Client.showErrorMessage("--------------");
+            }
+            network.waitAnswer();
+            authStage.close();
+        });
     }
 
 

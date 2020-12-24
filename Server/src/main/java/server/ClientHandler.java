@@ -20,6 +20,7 @@ public class ClientHandler {
 
     public ClientHandler(Server server, Socket socket) {
         this.socket = socket;
+        this.server = server;
     }
 
     public void handle() throws IOException {
@@ -51,14 +52,16 @@ public class ClientHandler {
                     AuthRequest authRequest = (AuthRequest) command;
                     username = server.getUsername(authRequest.getLogin(), authRequest.getPassword());
                     if (username != null) {
-                        server.addUser(username, null);
+//                        server.addUser(username, null);
                         server.getUserHandlers().put(username, this);
                         objectOutputStream.writeObject(Command.createAnswerAuthorization(username));
                     }
+                    break;
                 case BroadcastMessage:
                     for (Map.Entry<String, ClientHandler> pair : server.getUserHandlers().entrySet()) {
                         pair.getValue().sendCommand(command);
                     }
+                    break;
                 case PrivateMessage:
                     PrivateMessage privateMessage = (PrivateMessage) command;
                     ClientHandler targetHandler = server.getUserHandlers().get(privateMessage.getTargerUser());

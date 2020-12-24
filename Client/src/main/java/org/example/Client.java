@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class Client extends Application {
     public static Stage primaryStage;
+    public static Stage authStage;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -23,8 +24,8 @@ public class Client extends Application {
             showErrorMessage("Ошибка подключения");
             return;
         }
-        showAuthWindow(network);
         createMainWindow();
+        showAuthWindow(network);
 
 
     }
@@ -48,7 +49,7 @@ public class Client extends Application {
 
 
     public void showAuthWindow(Network network) throws IOException {
-        Stage authStage = new Stage();
+        authStage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(org.example.Client.class.getResource("authWindow.fxml"));
         authStage.setScene(new Scene(fxmlLoader.load()));

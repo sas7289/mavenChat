@@ -12,7 +12,7 @@ public class DBManagement {
 
     public static Statement connection() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("JDBC:sqlite:users.db");
+        connection = DriverManager.getConnection("JDBC:sqlite:Server/src/main/resources/users.db");
         return connection.createStatement();
     }
 

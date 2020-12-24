@@ -42,7 +42,8 @@ public class Server {
 
 
     public String getUsername(String login, String password) throws SQLException {
-        ResultSet rs = stmt.executeQuery(String.format("SELECT Username FROM Users WHERE Login = '%s' AND Password = '%s'", login, password));
+        ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Users WHERE Login = '%s' AND Password = '%s'", login, password));
+//        ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Users"));
         if (rs.next()) {
             return rs.getString("Username");
         } else {
@@ -51,7 +52,7 @@ public class Server {
     }
 
     public void addUser(String username, String group) throws SQLException {
-        stmt.executeUpdate(String.format("INSERT INTO current_session VALUES ('%s', '%s')", username, group));
+        stmt.executeUpdate(String.format("INSERT INTO Current_session VALUES ('%s', '%s')", username, group));
     }
 
 
