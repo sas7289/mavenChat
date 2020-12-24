@@ -3,10 +3,7 @@ package org.example.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.example.Client;
 
@@ -31,6 +28,9 @@ public class MainController  {
     @FXML
     Button sendMessageButton;
 
+    @FXML
+    Label usernameOnClient;
+
 
 
     private final ObservableList<RowTable> listOfMessages = FXCollections.observableArrayList(
@@ -49,11 +49,13 @@ public class MainController  {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfMessage"));
         messagesColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
 
+
         tableForMessages.setItems(listOfMessages);
     }
 
-
-
+    public Label getUsernameOnClient() {
+        return usernameOnClient;
+    }
 
     @FXML
     private void addMessageToTable(String message) {

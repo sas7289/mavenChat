@@ -58,10 +58,12 @@ public class AuthController {
                 network.sendAuth(login, pass);
             } catch (IOException e) {
                 e.printStackTrace();
-                Client.showErrorMessage("--------------");
+//                Client.showErrorMessage("--------------");
             }
             network.waitAnswer();
             authStage.close();
+            Client.primaryStage.show();
+            Client.mainController.getUsernameOnClient().setText(Client.username);
         });
     }
 

@@ -15,6 +15,8 @@ import java.io.IOException;
 public class Client extends Application {
     public static Stage primaryStage;
     public static Stage authStage;
+    public static String username;
+    public static MainController mainController;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -41,8 +43,8 @@ public class Client extends Application {
         }
 
         primaryStage.setTitle("ClientChat");
-        MainController controller = loader.getController();
-        controller.setClient(this);
+        mainController= loader.getController();
+        mainController.setClient(this);
         primaryStage.setAlwaysOnTop(true);
 //        primaryStage.show();
     }
@@ -59,6 +61,7 @@ public class Client extends Application {
 
         authStage.showAndWait();
     }
+
 
     public static void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

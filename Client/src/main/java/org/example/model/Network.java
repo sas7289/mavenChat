@@ -67,7 +67,7 @@ public class Network {
                 try {
                     AuthAnswer authAnswer = (AuthAnswer) objectInputStream.readObject();
                     if(authAnswer.getUsername() != null) {
-                        authAnswer.getUsername();
+                        Client.username = authAnswer.getUsername();
 //                        Client.showErrorMessage("waitanswer");
                         break;
                     }
@@ -77,6 +77,5 @@ public class Network {
                     e.printStackTrace();
                 }
             }
-            Client.primaryStage.show();
     }
 }
