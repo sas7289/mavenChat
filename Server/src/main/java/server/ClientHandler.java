@@ -57,7 +57,7 @@ public class ClientHandler {
                     if (username != null) {
 //                        server.addUser(username, null);
                         server.getUserHandlers().put(username, this);
-                        objectOutputStream.writeObject(Command.createAnswerAuthorization(username));
+                        objectOutputStream.writeObject(Command.createAnswerAuthorization(username, server.getMessagesStore().getStore()));
                     }
                     break;
                 case BroadcastMessage:

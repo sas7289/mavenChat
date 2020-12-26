@@ -2,6 +2,7 @@ package org.example.model;
 
 import java.io.*;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Queue;
 
 public class ArchiveMessages {
@@ -35,6 +36,11 @@ public class ArchiveMessages {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addListToQueue(ArrayList<String> messagesList) {
+        if( messagesList == null) {return;}
+        archiveQueue.addAll(messagesList);
     }
 
     public void addMessageToArchive(String message) {

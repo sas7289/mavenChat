@@ -6,15 +6,12 @@ import org.example.controller.MainController;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayDeque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.ArrayList;
 
 public class Network implements Serializable {
-    FileOutputStream fileOutputStream;
     String username;
     Socket socket;
+    MainController mainController;
     static int serverPort = 8199;
     static String serverHost = "localhost";
     ArchiveMessages archiveMessages;
@@ -31,6 +28,10 @@ public class Network implements Serializable {
     public Network(String host, int port) {
         serverHost = host;
         serverPort = port;
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     public boolean connection() {
@@ -111,12 +112,22 @@ public class Network implements Serializable {
                     if(authAnswer.getUsername() != null) {
                         this.setUsername(authAnswer.getUsername());
                         archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), 5);
+                        archiveMessages.addListToQueue(authAnswer.getMessagesStore());
+                        showHistory(username, authAnswer.getMessagesStore());
                         break;
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
+    }
+
+
+    public void showHistory(String author, ArrayList<String> messagesList) {
+        if(messagesList == null) {return;}
+        for (String s : messagesList) {
+            mainController.addMessageToTable(s, author);
+        }
     }
 
     public void archiving() {

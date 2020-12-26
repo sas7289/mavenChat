@@ -1,7 +1,9 @@
 package org.commands.Commands;
 
 
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Command implements Serializable {
     CommandsType type;
@@ -30,7 +32,7 @@ public class Command implements Serializable {
         return new ServerMessage(message);
     }
 
-    public static Command createAnswerAuthorization(String username) {
-        return new AuthAnswer(username);
+    public static Command createAnswerAuthorization(String username, ArrayList<String> messagesList) {
+        return new AuthAnswer(username, messagesList);
     }
 }

@@ -44,6 +44,7 @@ public class Client extends Application {
 
         primaryStage.setTitle("ClientChat");
         mainController= loader.getController();
+        network.setMainController(mainController);
         mainController.setNetwork(network);
         mainController.setClient(this);
         primaryStage.setAlwaysOnTop(true);

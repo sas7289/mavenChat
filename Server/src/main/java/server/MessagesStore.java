@@ -11,6 +11,7 @@ public class MessagesStore {
     }
 
     public MessagesStore(int storeMaxSize) {
+        store = new ArrayList<>();
         STORE_MAX_SIZE_FOR_CLIENT = storeMaxSize;
     }
     public void addMessage(String message) {
@@ -23,5 +24,9 @@ public class MessagesStore {
             begin = store.size() - STORE_MAX_SIZE_FOR_CLIENT;
         }
         return (ArrayList<String>) store.subList(begin, store.size());
+    }
+
+    public ArrayList<String> getStore() {
+        return store;
     }
 }
