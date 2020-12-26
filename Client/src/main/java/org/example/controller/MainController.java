@@ -2,9 +2,12 @@ package org.example.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.commands.Commands.BroadcastMessage;
 import org.commands.Commands.Command;
 import org.example.Client;
@@ -51,9 +54,21 @@ public class MainController  {
     public void initialize() {
         sendMessageButton.setOnAction(event -> {
             String message = textArea.getText();
-//            addMessageToTable(message);
+            addMessageToTable(message, "Я");
             sendMessageToServer(message);
             textArea.clear();
+        });
+
+        textArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode().equals(KeyCode.ENTER)) {
+                    String message = textArea.getText();
+                    addMessageToTable(message, "Я");
+                    sendMessageToServer(message);
+                    textArea.clear();
+                }
+            }
         });
 
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfMessage"));
@@ -68,8 +83,9 @@ public class MainController  {
     }
 
     @FXML
-    public void addMessageToTable(String message) {
-        listOfMessages.add(new RowTable(new Date(), message));
+    public void addMessageToTable(String message, String author) {
+        if(message.isBlank()) {return;}
+        listOfMessages.add(new RowTable(new Date(), String.format ("%s: %s", author, message)));
     }
 
 

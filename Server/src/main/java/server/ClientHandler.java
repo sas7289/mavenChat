@@ -1,6 +1,7 @@
 package server;
 
 import org.commands.Commands.AuthRequest;
+import org.commands.Commands.BroadcastMessage;
 import org.commands.Commands.Command;
 import org.commands.Commands.PrivateMessage;
 
@@ -13,11 +14,11 @@ import java.util.Map;
 
 public class ClientHandler {
     String username;
+
     Server server;
     Socket socket;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
-
     public ClientHandler(Server server, Socket socket) {
         this.socket = socket;
         this.server = server;
@@ -30,12 +31,14 @@ public class ClientHandler {
             try {
                 System.out.println("Жду сообщений от пользователя");
                 waitMessage();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException | SQLException e) {
+            } catch (IOException | ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     private void waitMessage() throws IOException, ClassNotFoundException, SQLException {
@@ -58,7 +61,10 @@ public class ClientHandler {
                     }
                     break;
                 case BroadcastMessage:
+                    BroadcastMessage broadcastMessage = (BroadcastMessage) command;
+                    server.getMessagesStore().addMessage(broadcastMessage.getMessage());
                     for (Map.Entry<String, ClientHandler> pair : server.getUserHandlers().entrySet()) {
+                        if(pair.getValue().getUsername().equals(this.getUsername())) {continue;}
                         pair.getValue().sendCommand(command);
                     }
                     break;

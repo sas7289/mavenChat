@@ -63,7 +63,7 @@ public class AuthController {
             network.waitAnswer();
             authStage.close();
             Client.primaryStage.show();
-            Client.mainController.getUsernameOnClient().setText(Client.username);
+            Client.mainController.getUsernameOnClient().setText(network.getUsername());
             Client.mainController.network.waitMessage();
         });
     }

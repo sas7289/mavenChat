@@ -6,12 +6,18 @@ import org.example.controller.MainController;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayDeque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
-public class Network {
+public class Network implements Serializable {
+    FileOutputStream fileOutputStream;
     String username;
     Socket socket;
     static int serverPort = 8199;
     static String serverHost = "localhost";
+    ArchiveMessages archiveMessages;
 
 
     private ObjectInputStream objectInputStream;
@@ -32,6 +38,7 @@ public class Network {
             socket = new Socket(serverHost, serverPort);
             this.objectOutputStream = new ObjectOutputStream (socket.getOutputStream());
             this.objectInputStream = new ObjectInputStream (socket.getInputStream());
+
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,8 +71,13 @@ public class Network {
         objectOutputStream.writeObject(command);
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     synchronized public void sendMessageToServer(String message) {
-        Command command = new BroadcastMessage(message);
+        archiveMessages.addMessageToArchive(message);
+        Command command = new BroadcastMessage(message, username);
         try {
 //            Client.showErrorMessage("-------------------");
             objectOutputStream.writeObject(command);
@@ -83,7 +95,7 @@ public class Network {
                     switch (command.getType()) {
                         case BroadcastMessage:
                             BroadcastMessage broadcastMessage = (BroadcastMessage) command;
-                            Client.mainController.addMessageToTable(broadcastMessage.getMessage());
+                            Client.mainController.addMessageToTable(broadcastMessage.getMessage(), broadcastMessage.getAuthor());
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
@@ -97,15 +109,17 @@ public class Network {
                 try {
                     AuthAnswer authAnswer = (AuthAnswer) objectInputStream.readObject();
                     if(authAnswer.getUsername() != null) {
-                        Client.username = authAnswer.getUsername();
-//                        Client.showErrorMessage("waitanswer");
+                        this.setUsername(authAnswer.getUsername());
+                        archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), 5);
                         break;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
+    }
+
+    public void archiving() {
+        archiveMessages.archiving();
     }
 }

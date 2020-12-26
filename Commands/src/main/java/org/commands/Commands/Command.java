@@ -22,8 +22,8 @@ public class Command implements Serializable {
         return new PrivateMessage(targetUser, message);
     }
 
-    public static Command createBroadcastMessageCmd(String message) {
-        return new BroadcastMessage(message);
+    public static Command createBroadcastMessageCmd(String message, String author) {
+        return new BroadcastMessage(message, author);
     }
 
     public static Command createServerMessageCmd(String message) {

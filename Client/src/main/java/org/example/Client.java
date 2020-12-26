@@ -47,7 +47,10 @@ public class Client extends Application {
         mainController.setNetwork(network);
         mainController.setClient(this);
         primaryStage.setAlwaysOnTop(true);
-//        primaryStage.show();
+        primaryStage.setOnCloseRequest(windowEvent -> {
+            network.archiving();
+            primaryStage.close();
+        });
     }
 
 

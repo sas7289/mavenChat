@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Server {
@@ -14,6 +15,7 @@ public class Server {
     private HashMap<String, ClientHandler> userHandlers = new HashMap();
     private static final int PORT_SERVER = 8199;
     private final ServerSocket serverSocket;
+    private MessagesStore messagesStore;
 
     public Server() throws IOException {
         this(PORT_SERVER);
@@ -21,6 +23,11 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        messagesStore = new MessagesStore(5);
+    }
+
+    public MessagesStore getMessagesStore() {
+        return messagesStore;
     }
 
     public void setStatement(Statement stmt) {
