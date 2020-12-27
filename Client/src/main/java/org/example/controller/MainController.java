@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -14,6 +15,8 @@ import org.example.Client;
 import org.example.model.Network;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -54,9 +57,10 @@ public class MainController  {
     @FXML
     public void initialize() {
         sendMessageButton.setOnAction(event -> {
+            String date = dateToString(new GregorianCalendar().getTime()) + "|";
             String message = textArea.getText();
-            addMessageToTable("Я", message);
-            sendMessageToServer(message);
+            addMessageToTable(date + " Я", message);
+            sendMessageToServer(date, message);
             textArea.clear();
         });
 
@@ -64,15 +68,16 @@ public class MainController  {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode().equals(KeyCode.ENTER)) {
+                    String date = dateToString(new GregorianCalendar().getTime()) + "|";
                     String message = textArea.getText();
-                    addMessageToTable("Я", message);
-                    sendMessageToServer(message);
+                    addMessageToTable(date + " Я", message);
+                    sendMessageToServer(date, message);
                     textArea.clear();
                 }
             }
         });
 
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("timeOfMessage"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("stringDate"));
         messagesColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
 
 
@@ -86,16 +91,21 @@ public class MainController  {
     @FXML
     public void addMessageToTable(String author, String message) {
         if(message.isBlank()) {return;}
+        String splitAuthor[] = author.split("\\|");
         message = message.replaceAll("$\n", "");
-        listOfMessages.add(new RowTable(new GregorianCalendar().getTime(), String.format ("%s: %s", author, message)));
+        listOfMessages.add(new RowTable(splitAuthor[0], String.format ("%s: %s", splitAuthor[1], message)));
     }
 
 
-    private void sendMessageToServer(String message) {
+    private void sendMessageToServer(String date, String message) {
         message = message.replaceAll("$\n", "");
-        network.sendMessageToServer(message);
+        network.sendMessageToServer(date, message);
     }
 
+    public String dateToString(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy HH:mm");
+        return dateFormat.format(date);
+    }
 
 
     public void setClient(Client client) {

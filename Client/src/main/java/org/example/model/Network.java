@@ -76,10 +76,10 @@ public class Network implements Serializable {
         return username;
     }
 
-    synchronized public void sendMessageToServer(String message) {
+    synchronized public void sendMessageToServer(String date, String message) {
         message = message + System.lineSeparator();
-        archiveMessages.addMessageToArchive(username, message);
-        Command command = new BroadcastMessage(username, message);
+        archiveMessages.addMessageToArchive(date + username, message);
+        Command command = new BroadcastMessage(date + username, message);
         try {
 //            Client.showErrorMessage("-------------------");
             objectOutputStream.writeObject(command);
@@ -122,7 +122,7 @@ public class Network implements Serializable {
                 AuthAnswer authAnswer = (AuthAnswer) command;
                 if (authAnswer.getUsername() != null) {
                     this.setUsername(authAnswer.getUsername());
-                    archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), 5);
+                    archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), -1);
                     archiveMessages.addListToQueue(authAnswer.getMessagesStore());
                     showHistory(authAnswer.getMessagesStore());
                     Client.goToMainWindow();
