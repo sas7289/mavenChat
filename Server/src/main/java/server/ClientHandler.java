@@ -66,7 +66,7 @@ public class ClientHandler {
                     break;
                 case BroadcastMessage:
                     BroadcastMessage broadcastMessage = (BroadcastMessage) command;
-                    server.getMessagesStore().addMessage(broadcastMessage.getMessage());
+                    server.getMessagesStore().addMessage(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
                     for (Map.Entry<String, ClientHandler> pair : server.getUserHandlers().entrySet()) {
                         if(pair.getValue().getUsername().equals(this.getUsername())) {continue;}
                         pair.getValue().sendCommand(command);

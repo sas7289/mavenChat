@@ -14,7 +14,9 @@ import org.example.Client;
 import org.example.model.Network;
 
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class MainController  {
     Client client;
@@ -45,7 +47,6 @@ public class MainController  {
     }
 
     private final ObservableList<RowTable> listOfMessages = FXCollections.observableArrayList(
-            new RowTable(new Date(), "HelloEPTA")
     );
 
 
@@ -54,7 +55,7 @@ public class MainController  {
     public void initialize() {
         sendMessageButton.setOnAction(event -> {
             String message = textArea.getText();
-            addMessageToTable(message, "Я");
+            addMessageToTable("Я", message);
             sendMessageToServer(message);
             textArea.clear();
         });
@@ -64,7 +65,7 @@ public class MainController  {
             public void handle(KeyEvent event) {
                 if(event.getCode().equals(KeyCode.ENTER)) {
                     String message = textArea.getText();
-                    addMessageToTable(message, "Я");
+                    addMessageToTable("Я", message);
                     sendMessageToServer(message);
                     textArea.clear();
                 }
@@ -83,13 +84,15 @@ public class MainController  {
     }
 
     @FXML
-    public void addMessageToTable(String message, String author) {
+    public void addMessageToTable(String author, String message) {
         if(message.isBlank()) {return;}
-        listOfMessages.add(new RowTable(new Date(), String.format ("%s: %s", author, message)));
+        message = message.replaceAll("$\n", "");
+        listOfMessages.add(new RowTable(new GregorianCalendar().getTime(), String.format ("%s: %s", author, message)));
     }
 
 
     private void sendMessageToServer(String message) {
+        message = message.replaceAll("$\n", "");
         network.sendMessageToServer(message);
     }
 

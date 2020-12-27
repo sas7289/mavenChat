@@ -77,8 +77,9 @@ public class Network implements Serializable {
     }
 
     synchronized public void sendMessageToServer(String message) {
-        archiveMessages.addMessageToArchive(String.format("%s: %s", username, message));
-        Command command = new BroadcastMessage(message, username);
+        message = message + System.lineSeparator();
+        archiveMessages.addMessageToArchive(username, message);
+        Command command = new BroadcastMessage(username, message);
         try {
 //            Client.showErrorMessage("-------------------");
             objectOutputStream.writeObject(command);
@@ -105,7 +106,7 @@ public class Network implements Serializable {
                         case BroadcastMessage:
                             BroadcastMessage broadcastMessage = (BroadcastMessage) command;
                             archiveMessages.addMessageToArchive(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
-                            Client.mainController.addMessageToTable(broadcastMessage.getMessage(), broadcastMessage.getAuthor());
+                            Client.mainController.addMessageToTable(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
@@ -123,7 +124,7 @@ public class Network implements Serializable {
                     this.setUsername(authAnswer.getUsername());
                     archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), 5);
                     archiveMessages.addListToQueue(authAnswer.getMessagesStore());
-                    showHistory(username, authAnswer.getMessagesStore());
+                    showHistory(authAnswer.getMessagesStore());
                     Client.goToMainWindow();
                 }
             }
@@ -133,12 +134,12 @@ public class Network implements Serializable {
     }
 
 
-    public void showHistory(String author, ArrayList<String> messagesList) {
+    public void showHistory(ArrayList<ArrayList<String>> messagesList) {
         if (messagesList == null) {
             return;
         }
-        for (String s : messagesList) {
-            mainController.addMessageToTable(s, author);
+        for (ArrayList<String> s : messagesList) {
+            mainController.addMessageToTable(s.get(0), s.get(1));
         }
     }
 

@@ -32,7 +32,7 @@ public class Command implements Serializable {
         return new ServerMessage(message);
     }
 
-    public static Command createAnswerAuthorization(String username, ArrayList<String> messagesList) {
+    public static Command createAnswerAuthorization(String username, ArrayList<ArrayList<String>> messagesList) {
         return new AuthAnswer(username, messagesList);
     }
 }
