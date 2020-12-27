@@ -50,11 +50,23 @@ public class ArchiveMessages {
         archiveQueue.add(message);
     }
 
+    public void addMessageToArchive(String author, String message) {
+        if(archiveQueue.size() >= MAX_ARCHIVE_SIZE) {
+            archiveQueue.remove();
+        }
+        archiveQueue.add(String.format("%s: %s", author, message));
+    }
+
+
+
+
+
+
     public void archiving() {
         for (String s : archiveQueue) {
             try {
                 new FileOutputStream(archive).close();
-                fileWriter.write(s + System.lineSeparator());
+                fileWriter.write(s /*+ System.lineSeparator()*/);
             } catch (IOException e) {
                 e.printStackTrace();
             }

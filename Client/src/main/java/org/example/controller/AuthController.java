@@ -50,7 +50,6 @@ public class AuthController {
     }
 
     private void auth() {
-        Platform.runLater(() -> {
             try {
                 String login = loginField.getText();
                 String pass = passwordField.getText();
@@ -60,13 +59,10 @@ public class AuthController {
                 e.printStackTrace();
 //                Client.showErrorMessage("--------------");
             }
-            network.waitAnswer();
-            authStage.close();
-            Client.primaryStage.show();
-            Client.mainController.getUsernameOnClient().setText(network.getUsername());
-            Client.mainController.network.waitMessage();
-        });
+                network.waitAnswer();
+//        goToMainWindow();
     }
+
 
 
 }

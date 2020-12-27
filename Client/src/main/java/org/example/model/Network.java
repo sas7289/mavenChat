@@ -37,8 +37,8 @@ public class Network implements Serializable {
     public boolean connection() {
         try {
             socket = new Socket(serverHost, serverPort);
-            this.objectOutputStream = new ObjectOutputStream (socket.getOutputStream());
-            this.objectInputStream = new ObjectInputStream (socket.getInputStream());
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
 
             return true;
         } catch (IOException e) {
@@ -77,10 +77,18 @@ public class Network implements Serializable {
     }
 
     synchronized public void sendMessageToServer(String message) {
-        archiveMessages.addMessageToArchive(message);
+        archiveMessages.addMessageToArchive(String.format("%s: %s", username, message));
         Command command = new BroadcastMessage(message, username);
         try {
 //            Client.showErrorMessage("-------------------");
+            objectOutputStream.writeObject(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    synchronized public void sendMessageToServer(Command command) {
+        try {
             objectOutputStream.writeObject(command);
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,6 +104,7 @@ public class Network implements Serializable {
                     switch (command.getType()) {
                         case BroadcastMessage:
                             BroadcastMessage broadcastMessage = (BroadcastMessage) command;
+                            archiveMessages.addMessageToArchive(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
                             Client.mainController.addMessageToTable(broadcastMessage.getMessage(), broadcastMessage.getAuthor());
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -106,25 +115,28 @@ public class Network implements Serializable {
     }
 
     synchronized public void waitAnswer() {
-            while (true) {
-                try {
-                    AuthAnswer authAnswer = (AuthAnswer) objectInputStream.readObject();
-                    if(authAnswer.getUsername() != null) {
-                        this.setUsername(authAnswer.getUsername());
-                        archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), 5);
-                        archiveMessages.addListToQueue(authAnswer.getMessagesStore());
-                        showHistory(username, authAnswer.getMessagesStore());
-                        break;
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+        try {
+            Command command = (Command) objectInputStream.readObject();
+            if (command.getType() == CommandsType.AuthAnswer) {
+                AuthAnswer authAnswer = (AuthAnswer) command;
+                if (authAnswer.getUsername() != null) {
+                    this.setUsername(authAnswer.getUsername());
+                    archiveMessages = new ArchiveMessages(String.format("history_%s.txt", username), 5);
+                    archiveMessages.addListToQueue(authAnswer.getMessagesStore());
+                    showHistory(username, authAnswer.getMessagesStore());
+                    Client.goToMainWindow();
                 }
             }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
     public void showHistory(String author, ArrayList<String> messagesList) {
-        if(messagesList == null) {return;}
+        if (messagesList == null) {
+            return;
+        }
         for (String s : messagesList) {
             mainController.addMessageToTable(s, author);
         }

@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ClientHandler {
@@ -42,7 +43,7 @@ public class ClientHandler {
     }
 
     private void waitMessage() throws IOException, ClassNotFoundException, SQLException {
-        while (true) {
+        mark: while (true) {
             Command command = null;
             try {
                 command = (Command) objectInputStream.readObject();
@@ -54,10 +55,13 @@ public class ClientHandler {
                 case Auth:
                     AuthRequest authRequest = (AuthRequest) command;
                     username = server.getUsername(authRequest.getLogin(), authRequest.getPassword());
-                    if (username != null) {
+                    if (username != null && !server.isExist(username)) {
 //                        server.addUser(username, null);
                         server.getUserHandlers().put(username, this);
                         objectOutputStream.writeObject(Command.createAnswerAuthorization(username, server.getMessagesStore().getStore()));
+                    }
+                    else {
+                        objectOutputStream.writeObject(Command.createAnswerAuthorization(null, null));
                     }
                     break;
                 case BroadcastMessage:
@@ -72,6 +76,15 @@ public class ClientHandler {
                     PrivateMessage privateMessage = (PrivateMessage) command;
                     ClientHandler targetHandler = server.getUserHandlers().get(privateMessage.getTargerUser());
                     targetHandler.sendCommand(command);
+                    break;
+                case Disconnect:
+                    Iterator iterator = server.getUserHandlers().keySet().iterator();
+                    while (iterator.hasNext()) {
+                        if(iterator.next().equals(username)) {
+                            iterator.remove();
+                            break mark;
+                        }
+                    }
             }
         }
     }

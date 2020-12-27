@@ -66,4 +66,13 @@ public class Server {
     public HashMap<String, ClientHandler> getUserHandlers() {
         return userHandlers;
     }
+
+    public boolean isExist(String username) {
+        for (String s : userHandlers.keySet()) {
+            if(s.equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
