@@ -7,7 +7,7 @@ public class AuthRequest extends Command implements Serializable {
     String password;
 
     public AuthRequest(String login, String password) {
-        super.type = CommandsType.Auth;
+        super(CommandsType.Auth);
         this.login = login;
         this.password = password;
     }

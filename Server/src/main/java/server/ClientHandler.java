@@ -5,11 +5,13 @@ import org.commands.Commands.BroadcastMessage;
 import org.commands.Commands.Command;
 import org.commands.Commands.PrivateMessage;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,6 +22,7 @@ public class ClientHandler {
     Socket socket;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
+
     public ClientHandler(Server server, Socket socket) {
         this.socket = socket;
         this.server = server;
@@ -43,12 +46,12 @@ public class ClientHandler {
     }
 
     private void waitMessage() throws IOException, ClassNotFoundException, SQLException {
-        mark: while (true) {
+        mark:
+        while (true) {
             Command command = null;
             try {
                 command = (Command) objectInputStream.readObject();
-            }
-            catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 System.out.println("Пришёл неизвестный объект");
             }
             switch (command.getType()) {
@@ -59,8 +62,11 @@ public class ClientHandler {
 //                        server.addUser(username, null);
                         server.getUserHandlers().put(username, this);
                         objectOutputStream.writeObject(Command.createAnswerAuthorization(username, server.getMessagesStore().getStore()));
-                    }
-                    else {
+                        for (ClientHandler clientHandler : server.getUserHandlers().values()) {
+                            clientHandler.sendCommand(Command.createUpdateUsersList(new HashSet<>(server.getUserHandlers().keySet())));
+                        }
+//                        objectOutputStream.writeObject(Command.createUpdateUsersList(new HashSet<>(server.getUserHandlers().keySet())));
+                    } else {
                         objectOutputStream.writeObject(Command.createAnswerAuthorization(null, null));
                     }
                     break;
@@ -68,7 +74,9 @@ public class ClientHandler {
                     BroadcastMessage broadcastMessage = (BroadcastMessage) command;
                     server.getMessagesStore().addMessage(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
                     for (Map.Entry<String, ClientHandler> pair : server.getUserHandlers().entrySet()) {
-                        if(pair.getValue().getUsername().equals(this.getUsername())) {continue;}
+                        if (pair.getValue().getUsername().equals(this.getUsername())) {
+                            continue;
+                        }
                         pair.getValue().sendCommand(command);
                     }
                     break;
@@ -80,10 +88,17 @@ public class ClientHandler {
                 case Disconnect:
                     Iterator iterator = server.getUserHandlers().keySet().iterator();
                     while (iterator.hasNext()) {
-                        if(iterator.next().equals(username)) {
+                        if (iterator.next().equals(username)) {
                             iterator.remove();
-                            break mark;
                         }
+                    }
+                    try (ObjectOutputStream dataOutputStream = new ObjectOutputStream(new FileOutputStream("serverHistory.txt"));){
+                        dataOutputStream.writeObject(server.getMessagesStore());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        break mark;
                     }
             }
         }

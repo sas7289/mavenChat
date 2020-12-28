@@ -3,7 +3,7 @@ package org.commands.Commands;
 public class Disconnect extends Command {
 
     public Disconnect() {
-        super.type = CommandsType.Disconnect;
+        super(CommandsType.Disconnect);
     }
 
 

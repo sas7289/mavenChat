@@ -1,6 +1,6 @@
 package server;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.ResultSet;
@@ -23,7 +23,17 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        messagesStore = new MessagesStore(5);
+        File file = new File("serverHistory.txt");
+        if(!file.exists()) {
+            messagesStore = new MessagesStore(100);
+            return;
+        }
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("serverHistory.txt"));
+        try {
+            messagesStore = (MessagesStore) objectInputStream.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public MessagesStore getMessagesStore() {

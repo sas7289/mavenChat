@@ -30,6 +30,9 @@ public class MainController  {
     TextArea textArea;
 
     @FXML
+    ListView<String> usersList;
+
+    @FXML
     TableView<RowTable> tableForMessages;
 
     @FXML
@@ -63,6 +66,8 @@ public class MainController  {
             sendMessageToServer(date, message);
             textArea.clear();
         });
+
+//        usersList = new ListView<>(FXCollections.observableArrayList());
 
         textArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -110,5 +115,12 @@ public class MainController  {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public void updateUsersList() {
+//        for (String s : network.getUsersSet()) {
+            usersList.setItems(FXCollections.observableArrayList(network.getUsersSet()));
+//            usersList.getItems().add(s);
+//        }
     }
 }

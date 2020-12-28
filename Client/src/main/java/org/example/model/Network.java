@@ -7,6 +7,7 @@ import org.example.controller.MainController;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class Network implements Serializable {
     String username;
@@ -15,6 +16,7 @@ public class Network implements Serializable {
     static int serverPort = 8199;
     static String serverHost = "localhost";
     ArchiveMessages archiveMessages;
+    public Set<String> usersSet;
 
 
     private ObjectInputStream objectInputStream;
@@ -107,12 +109,21 @@ public class Network implements Serializable {
                             BroadcastMessage broadcastMessage = (BroadcastMessage) command;
                             archiveMessages.addMessageToArchive(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
                             Client.mainController.addMessageToTable(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
+                            break;
+                        case UpdateUsersList:
+                            UpdateUsersList updateUsersList = (UpdateUsersList) command;
+                            usersSet = updateUsersList.getUsersSet();
+                            Client.mainController.updateUsersList();
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    public Set<String> getUsersSet() {
+        return usersSet;
     }
 
     synchronized public void waitAnswer() {

@@ -7,7 +7,7 @@ public class AuthAnswer extends Command {
     String username;
     ArrayList<ArrayList<String>> messagesList;
     public AuthAnswer(String username, ArrayList<ArrayList<String>> messagesList) {
-        super.type = CommandsType.AuthAnswer;
+        super(CommandsType.AuthAnswer);
         this.username = username;
         this.messagesList = messagesList;
     }

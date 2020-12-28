@@ -8,5 +8,6 @@ public enum CommandsType implements Serializable {
     BroadcastMessage,
     Disconnect,
     PrivateMessage,
-    ServerMessage
+    ServerMessage,
+    UpdateUsersList
 }

@@ -7,7 +7,7 @@ public class BroadcastMessage extends Command implements Serializable {
     String message;
 
     public BroadcastMessage(String author, String message) {
-        super.type = CommandsType.BroadcastMessage;
+        super(CommandsType.BroadcastMessage);
         this.message = message;
         this.author = author;
     }

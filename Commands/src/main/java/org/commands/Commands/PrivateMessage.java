@@ -5,7 +5,7 @@ public class PrivateMessage extends Command {
     String targerUser;
 
     public PrivateMessage(String targerUser ,String message) {
-        super.type = CommandsType.PrivateMessage;
+        super(CommandsType.PrivateMessage);
         this.message = message;
     }
 
