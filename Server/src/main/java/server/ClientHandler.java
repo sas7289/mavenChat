@@ -86,11 +86,15 @@ public class ClientHandler {
                     targetHandler.sendCommand(command);
                     break;
                 case Disconnect:
+                    //Можно отправку списка участников вынести в отдельный метод
                     Iterator iterator = server.getUserHandlers().keySet().iterator();
                     while (iterator.hasNext()) {
                         if (iterator.next().equals(username)) {
                             iterator.remove();
                         }
+                    }
+                    for (ClientHandler clientHandler : server.getUserHandlers().values()) {
+                        clientHandler.sendCommand(Command.createUpdateUsersList(new HashSet<>(server.getUserHandlers().keySet())));
                     }
                     try (ObjectOutputStream dataOutputStream = new ObjectOutputStream(new FileOutputStream("serverHistory.txt"));){
                         dataOutputStream.writeObject(server.getMessagesStore());
