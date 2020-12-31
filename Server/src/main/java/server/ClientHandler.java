@@ -1,5 +1,7 @@
 package server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.commands.Commands.AuthRequest;
 import org.commands.Commands.BroadcastMessage;
 import org.commands.Commands.Command;
@@ -16,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ClientHandler {
+    private static final Logger logger = (Logger) LogManager.getLogger("ClientHandler");
     String username;
 
     Server server;
@@ -52,10 +55,11 @@ public class ClientHandler {
             try {
                 command = (Command) objectInputStream.readObject();
             } catch (ClassNotFoundException e) {
-                System.out.println("Пришёл неизвестный объект");
+                logger.error("От клиента пришёл неизвестный объект", e);
             }
             switch (command.getType()) {
                 case Auth:
+                    logger.info("Клиент прислал запрос на авторизацию");
                     AuthRequest authRequest = (AuthRequest) command;
                     username = server.getUsername(authRequest.getLogin(), authRequest.getPassword());
                     if (username != null && !server.isExist(username)) {
@@ -65,12 +69,13 @@ public class ClientHandler {
                         for (ClientHandler clientHandler : server.getUserHandlers().values()) {
                             clientHandler.sendCommand(Command.createUpdateUsersList(new HashSet<>(server.getUserHandlers().keySet())));
                         }
-//                        objectOutputStream.writeObject(Command.createUpdateUsersList(new HashSet<>(server.getUserHandlers().keySet())));
+                        logger.info("Клиент авторизовался");
                     } else {
                         objectOutputStream.writeObject(Command.createAnswerAuthorization(null, null));
                     }
                     break;
                 case BroadcastMessage:
+                    logger.info("Клиент прислал BroadcastMessage");
                     BroadcastMessage broadcastMessage = (BroadcastMessage) command;
                     server.getMessagesStore().addMessage(broadcastMessage.getAuthor(), broadcastMessage.getMessage());
                     for (Map.Entry<String, ClientHandler> pair : server.getUserHandlers().entrySet()) {
@@ -96,6 +101,7 @@ public class ClientHandler {
                     for (ClientHandler clientHandler : server.getUserHandlers().values()) {
                         clientHandler.sendCommand(Command.createUpdateUsersList(new HashSet<>(server.getUserHandlers().keySet())));
                     }
+                    logger.info("Клиент отключился");
                     try (ObjectOutputStream dataOutputStream = new ObjectOutputStream(new FileOutputStream("serverHistory.txt"));){
                         dataOutputStream.writeObject(server.getMessagesStore());
 
