@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ClientHandler {
-    private static final Logger logger = (Logger) LogManager.getLogger("ClientHandler");
+    private static final Logger logger = (Logger) LogManager.getLogger();
     String username;
 
     Server server;
