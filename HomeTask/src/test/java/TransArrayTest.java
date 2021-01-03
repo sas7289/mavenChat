@@ -84,4 +84,26 @@ class TransArrayTest {
                 Arguments.arguments(targetArr4, testArr4)
         );
     }
+
+
+
+    @ParameterizedTest
+    @MethodSource("argumentsForTask3")
+    @DisplayName("Task_3")
+    public void testTask3(boolean target, int[] testArr) {
+        Assertions.assertEquals(target, TransArray.isThereOneOrFour(testArr));
+    }
+
+    static Stream<Arguments> argumentsForTask3() {
+        int[] testArr1 = {1,2,8,6,5,3,3,567,8,4};
+        int[] testArr2 = {2,5,9,6,3,100};
+        int[] testArr3 = {123,0,3,44,11};
+        int[] testArr4 = {1,4,1,4,1,4,1,4};
+        return Stream.of(
+                Arguments.arguments(true, testArr1),
+                Arguments.arguments(false, testArr2),
+                Arguments.arguments(false, testArr3),
+                Arguments.arguments(true, testArr4)
+        );
+    }
 }

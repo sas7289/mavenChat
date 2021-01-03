@@ -15,4 +15,13 @@ public class TransArray {
     }
 
 
+    public static boolean isThereOneOrFour(int[] arr) {
+        for (int i : arr) {
+            if(i == 1 || i == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
