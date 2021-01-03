@@ -12,10 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransArrayTest {
     private TransArray transArray;
 
-    @BeforeEach
-    void startUp() {
-        transArray = new TransArray();
-    }
 
 
     @DisplayName("Without 4")
@@ -24,7 +20,7 @@ class TransArrayTest {
         Integer[] testArr = new Integer[] {1,2,3,5,6,7,8,9};
 
         Assertions.assertThrows(RuntimeException.class, () -> {
-            transArray.transArr(testArr);
+            TransArray.transArr(testArr);
         });
     }
 
@@ -34,10 +30,10 @@ class TransArrayTest {
         Integer[] testArr = new Integer[] {1,2,3,4,5,6,7,8,9};
         Integer[] targetArr = new Integer[] {5,6,7,8,9};
 
-        Assertions.assertArrayEquals(targetArr, transArray.transArr(testArr));
+        Assertions.assertArrayEquals(targetArr, TransArray.transArr(testArr));
 
         Assertions.assertDoesNotThrow(() -> {
-            transArray.transArr(testArr);
+            TransArray.transArr(testArr);
         });
     }
 
@@ -47,10 +43,10 @@ class TransArrayTest {
         Integer[] testArr = new Integer[] {4,5,1,9,5,4,7,4};
         Integer[] targetArr = new Integer[]{};
 
-        Assertions.assertArrayEquals(targetArr, transArray.transArr(testArr));
+        Assertions.assertArrayEquals(targetArr, TransArray.transArr(testArr));
 
         Assertions.assertDoesNotThrow(() -> {
-            transArray.transArr(testArr);
+            TransArray.transArr(testArr);
         });
     }
 
@@ -60,10 +56,10 @@ class TransArrayTest {
         Integer[] testArr = new Integer[] {1,2,3,4,6,4,7,3,12,3};
         Integer[] targetArr = new Integer[] {7,3,12,3};
 
-        Assertions.assertArrayEquals(targetArr, transArray.transArr(testArr));
+        Assertions.assertArrayEquals(targetArr, TransArray.transArr(testArr));
 
         Assertions.assertDoesNotThrow(() -> {
-            transArray.transArr(testArr);
+            TransArray.transArr(testArr);
         });
     }
 
@@ -72,7 +68,7 @@ class TransArrayTest {
     @ParameterizedTest
     @MethodSource("getArguments")
     public void testTransParam (Integer[] targetArr, Integer[] testArr) {
-        Assertions.assertArrayEquals(targetArr, transArray.transArr(testArr));
+        Assertions.assertArrayEquals(targetArr, TransArray.transArr(testArr));
     }
 
     static Stream<Arguments> getArguments() {
