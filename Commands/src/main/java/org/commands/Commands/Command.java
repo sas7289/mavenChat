@@ -4,9 +4,14 @@ package org.commands.Commands;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class Command implements Serializable {
     CommandsType type;
+
+    public Command(CommandsType commandsType) {
+        type = commandsType;
+    }
     public CommandsType getType() {
         return this.type;
     }
@@ -34,5 +39,9 @@ public class Command implements Serializable {
 
     public static Command createAnswerAuthorization(String username, ArrayList<ArrayList<String>> messagesList) {
         return new AuthAnswer(username, messagesList);
+    }
+
+    public static Command createUpdateUsersList(Set<String> usersSet) {
+        return new UpdateUsersList(usersSet);
     }
 }

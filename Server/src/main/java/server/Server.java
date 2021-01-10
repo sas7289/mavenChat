@@ -1,6 +1,9 @@
 package server;
 
-import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.ResultSet;
@@ -10,8 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Server {
+    private static final Logger logger = (Logger) LogManager.getLogger("Server");
     Statement stmt;
-    //    private ArrayList<ClientHandler> userHandlers = new ArrayList<>();
     private HashMap<String, ClientHandler> userHandlers = new HashMap();
     private static final int PORT_SERVER = 8199;
     private final ServerSocket serverSocket;
@@ -23,7 +26,17 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        messagesStore = new MessagesStore(5);
+        File file = new File("serverHistory.txt");
+        if (!file.exists()) {
+            messagesStore = new MessagesStore(100);
+            return;
+        }
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("serverHistory.txt"));
+        try {
+            messagesStore = (MessagesStore) objectInputStream.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public MessagesStore getMessagesStore() {
@@ -37,12 +50,16 @@ public class Server {
     public void waitConnection() {
         while (true) {
             System.out.println("Сервер запущен и ожидает подключения");
+            logger.info("Сервер запущен и ожидает подключения");
             try {
                 Socket clientSocket = serverSocket.accept();
+                Logger logger = (Logger) LogManager.getLogger();
                 ClientHandler clientHandler = new ClientHandler(this, clientSocket);
                 clientHandler.handle();
+                logger.info("Клиент подключился");
             } catch (IOException e) {
                 e.printStackTrace();
+                logger.error("Ошибка при подключении клиента", e);
             }
         }
     }
@@ -50,7 +67,6 @@ public class Server {
 
     public String getUsername(String login, String password) throws SQLException {
         ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Users WHERE Login = '%s' AND Password = '%s'", login, password));
-//        ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Users"));
         if (rs.next()) {
             return rs.getString("Username");
         } else {
@@ -69,7 +85,7 @@ public class Server {
 
     public boolean isExist(String username) {
         for (String s : userHandlers.keySet()) {
-            if(s.equals(username)) {
+            if (s.equals(username)) {
                 return true;
             }
         }

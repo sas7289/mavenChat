@@ -4,7 +4,7 @@ public class ServerMessage extends Command {
     String message;
 
     public ServerMessage(String message) {
-        super.type = CommandsType.ServerMessage;
+        super(CommandsType.ServerMessage);
         this.message = message;
     }
 

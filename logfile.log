@@ -1,0 +1,6 @@
+INFO  2021-01-03 19:43:14 [main] server.Server (Server.java:53) - Сервер запущен и ожидает подключения
+INFO  2021-01-03 19:43:19 [main] server.Server (Server.java:59) - Клиент подключился
+INFO  2021-01-03 19:43:19 [main] server.Server (Server.java:53) - Сервер запущен и ожидает подключения
+INFO  2021-01-03 19:43:36 [Thread-0] server.ClientHandler (ClientHandler.java:62) - Клиент прислал запрос на авторизацию
+INFO  2021-01-03 19:43:36 [Thread-0] server.ClientHandler (ClientHandler.java:72) - Клиент авторизовался
+INFO  2021-01-03 19:43:37 [Thread-0] server.ClientHandler (ClientHandler.java:104) - Клиент отключился
